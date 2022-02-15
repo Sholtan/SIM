@@ -60,8 +60,8 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
 
 
     for (int i = 0; i < 109; i++) {
-        physPlasticScin[i] = new G4PVPlacement(0, G4ThreeVector(0., 0., (-125.+2.3*i)*mm), logicPlasticScin, "physPlasticScin" + std::to_string(i), logicWorld, false, i, true);
-        physWolfram[i] = new G4PVPlacement(0, G4ThreeVector(0., 0., (-123.5+2.3*i)*mm), logicWolfram, "physWolfram" + std::to_string(i), logicWorld, false, i, true);
+        physPlasticScin[i] = new G4PVPlacement(0, G4ThreeVector(0., 0., (-125.+0.75+2.3*i)*mm), logicPlasticScin, "physPlasticScin" + std::to_string(i), logicWorld, false, i, true);
+        physWolfram[i] = new G4PVPlacement(0, G4ThreeVector(0., 0., (-123.5+0.4+2.3*i)*mm), logicWolfram, "physWolfram" + std::to_string(i), logicWorld, false, i, true);
     }
 
 // 10 ММ ПЛАСТИК
