@@ -1,126 +1,120 @@
 #include "construction.hh"
 
 MyDetectorConstruction::MyDetectorConstruction()
-{
-    fMessenger = new G4GenericMessenger(this, "/detector/", "Detector Construction");
-
-    fMessenger->DeclareProperty("nCols", nCols, "Number of columns");
-    fMessenger->DeclareProperty("nRows", nRows, "Number of rows");
-    fMessenger->DeclareProperty("isCherenkov", isCherenkov, "Toggle Cherenkov setup");
-    fMessenger->DeclareProperty("isScintillator", isScintillator, "Toggle Scintillator setup");
-    nCols = 100;
-    nRows = 100;
-
-    DefineMaterials();
-
-    xWorld = 0.5*m;
-    yWorld = 0.5*m;
-    zWorld = 0.5*m;
-
-    isCherenkov = false;
-    isScintillator = false;
-}
+{}
 
 MyDetectorConstruction::~MyDetectorConstruction()
 {}
 
-void MyDetectorConstruction::DefineMaterials()
+G4VPhysicalVolume *MyDetectorConstruction::Construct()
 {
     G4NistManager *nist = G4NistManager::Instance();
 
-    SiO2 = new G4Material("SiO2", 2.201*g/cm3, 2);
-    SiO2->AddElement(nist->FindOrBuildElement("Si"), 1);
-    SiO2->AddElement(nist->FindOrBuildElement("O"), 2);
+    //  МАТЕРИАЛЫ        
 
-    H2O = new G4Material("H2O", 1.000*g/cm3, 2);
-    H2O->AddElement(nist->FindOrBuildElement("H"), 2);
-    H2O->AddElement(nist->FindOrBuildElement("O"), 1);
+    G4Material *Polyvinyltoluene = new G4Material("Polyvinyltoluene", 1.023*g/cm3, 2); // ПЛАСТИКОВЫЙ СЦИНТИЛЛЯТОР
+    Polyvinyltoluene->AddElement(nist->FindOrBuildElement("C"), 9);
+    Polyvinyltoluene->AddElement(nist->FindOrBuildElement("H"), 10);
 
-    C = nist->FindOrBuildElement("C");
+    G4Material *Wmat = new G4Material("Wmat", 19.3*g/cm3, 1);
+    Wmat->AddElement(nist->FindOrBuildElement("W"), 1);
 
-    Aerogel = new G4Material("Aerogel", 0.200*g/cm3, 3);
-    Aerogel->AddMaterial(SiO2, 62.5*perCent);
-    Aerogel->AddMaterial(H2O, 37.4*perCent);
-    Aerogel->AddElement(C, 0.1*perCent);
+    G4Material *BorScinmat = new G4Material("BorScinmat", 1.026, 3);
+    BorScinmat->AddElement(nist->FindOrBuildElement("C"), 9);
+    BorScinmat->AddElement(nist->FindOrBuildElement("H"), 10);
+    BorScinmat->AddElement(nist->FindOrBuildElement("B"), 1);
 
-    worldMat = nist->FindOrBuildMaterial("G4_AIR");
+    G4Material *worldMat = nist->FindOrBuildMaterial("G4_AIR");
 
-    G4double energy[2] = {1.239841939*eV/0.2, 1.239841939*eV/0.9};
-    G4double rindexAerogel[2] = {1.1, 1.1};
-    G4double rindexWorld[2] = {1.0, 1.0};
+   
 
-    G4MaterialPropertiesTable *mptAerogel = new G4MaterialPropertiesTable();
-    mptAerogel->AddProperty("RINDEX", energy, rindexAerogel, 2);
 
+    // МИР
+
+    G4Box *solidWorld = new G4Box("solidWorld", 180*mm, 180*mm, 300*mm);
+
+    G4LogicalVolume *logicWorld = new G4LogicalVolume(solidWorld, worldMat, "logicWorld");
+
+    G4VPhysicalVolume *physWorld = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicWorld, "physWorld", 0, false, 0, true);
+
+    // ПЛАСТИКОВЫЙ СЦИНТИЛЛЯТОР
+
+    G4Box *solidPlasticScin = new G4Box("solidPlasticScin", 60*mm, 60*mm, 0.75*mm);
+    G4LogicalVolume *logicPlasticScin = new G4LogicalVolume(solidPlasticScin, Polyvinyltoluene, "logicPlasticScin");
+
+    G4VisAttributes * calTubeVisAtt = new G4VisAttributes(G4Colour(0.,1.,1.)); // Instantiation of a set of visualization attributes with cyan colour
+    //calTubeVisAtt->SetForceWireframe(true); // Set the forced wireframe style
+    logicPlasticScin->SetVisAttributes(calTubeVisAtt);
+
+    G4VPhysicalVolume *physPlasticScin[109];
+
+    // ВОЛЬФРАМОВЫЙ ПРЕОБРАЗОВАТЕЛЬ
     
-    G4MaterialPropertiesTable *mptWorld = new G4MaterialPropertiesTable();
-    mptWorld->AddProperty("RINDEX", energy, rindexWorld, 2);
+    G4Box *solidWolfram = new G4Box("solidWolfram", 60*mm, 60*mm, 0.4*mm);
+    G4LogicalVolume *logicWolfram = new G4LogicalVolume(solidWolfram, Wmat, "logicWolfram");
+    G4VisAttributes * calTubeVisAtt2 = new G4VisAttributes(G4Colour(0.5,0.5,0.5)); // Instantiation of a set of visualization attributes with cyan colour
+    //calTubeVisAtt2->SetForceWireframe(true); // Set the forced wireframe style
+    logicWolfram->SetVisAttributes(calTubeVisAtt2);
+
+    G4VPhysicalVolume *physWolfram[109];
 
 
-    Aerogel->SetMaterialPropertiesTable(mptAerogel);
-
-    worldMat->SetMaterialPropertiesTable(mptWorld);
-
-    /*Na = nist->FindOrBuildElement("Na");
-    I = nist->FindOrBuildElement("I");
-    NaI->AddElement(Na, 1);
-    NaI->AddElement(I, 1);*/
-
-}
-
-void MyDetectorConstruction::ConstructCherenkov()
-{
-    solidRadiator = new G4Box("solidRadiator", 0.4*m, 0.4*m, 0.01*m);
-
-    logicRadiator = new G4LogicalVolume(solidRadiator, Aerogel, "logicalRadiator");
-
-    physRadiator = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.25*m), logicRadiator, "physRadiator", logicWorld, false, 0, true);
-
-
-
-    
-    solidDetector = new G4Box("solidDetector", xWorld/nRows, yWorld/nCols, 0.01*m);
-
-    logicDetector = new G4LogicalVolume(solidDetector, worldMat, "logicDetector");
-
-    for(G4int i = 0; i < nRows; i++) {
-        for (G4int j = 0; j < nCols; j++) {
-            physDetector = new G4PVPlacement(0, G4ThreeVector(-0.5*m+(i+0.5)*m/nRows, -0.5*m+(j+0.5)*m/nCols, 0.49*m), logicDetector, "physDetector", logicWorld, false, j + i*nCols, true);
-
-        }
+    for (int i = 0; i < 109; i++) {
+        physPlasticScin[i] = new G4PVPlacement(0, G4ThreeVector(0., 0., (-125.+0.75+2.3*i)*mm), logicPlasticScin, "physPlasticScin" + std::to_string(i), logicWorld, false, i, true);
+        physWolfram[i] = new G4PVPlacement(0, G4ThreeVector(0., 0., (-123.5+0.4+2.3*i)*mm), logicWolfram, "physWolfram" + std::to_string(i), logicWorld, false, i, true);
     }
-} 
 
+// 10 ММ ПЛАСТИК
+    G4Box *solid10Plastic = new G4Box("solid10Plastic", 60*mm, 5*mm, 50*mm);
+    G4LogicalVolume *logic10Plastic = new G4LogicalVolume(solid10Plastic, Polyvinyltoluene, "logic10Plastic");
 
-/*void MyDetectorConstruction::ConstructScintillator()
-{
-    solidScintillator = new G4Tubs("solidScintillator", 10*cm, 20*cm, 30*cm, 0*deg, 360*deg);
-    logicScintillator = new G4LogicalVolume(solidScintillator, NaI, "logicalScintillator");
-    physScintillator = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicScintillator, "physScintillator", logicWorld, false, 0, true);
-}*/
+    G4VisAttributes * calTubeVisAtt3 = new G4VisAttributes(G4Colour(1.,1.,0.)); // Instantiation of a set of visualization attributes with cyan colour
+    //calTubeVisAtt3->SetForceWireframe(true); // Set the forced wireframe style
+    logic10Plastic->SetVisAttributes(calTubeVisAtt3);
 
-G4VPhysicalVolume *MyDetectorConstruction::Construct()
-{
-    solidWorld = new G4Box("solidWorld", xWorld, yWorld, zWorld);
+    G4Box *solidBorScin = new G4Box("solidBorScin", 60.*mm, 2.5*mm, 50.*mm);
+    G4LogicalVolume *logicBorScin = new G4LogicalVolume(solidBorScin, BorScinmat, "logicBorScin");
 
-    logicWorld = new G4LogicalVolume(solidWorld, worldMat, "logicWorld");
-
-    physWorld = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicWorld, "physWorld", 0, false, 0, true);
-
+    G4VisAttributes * calTubeVisAtt4 = new G4VisAttributes(G4Colour(0.,1.,0.)); // Instantiation of a set of visualization attributes with cyan colour
+    //calTubeVisAtt3->SetForceWireframe(true); // Set the forced wireframe style
+    logicBorScin->SetVisAttributes(calTubeVisAtt4);
     
-    if(isCherenkov)
-        ConstructCherenkov();
 
 
+    G4VPhysicalVolume *phys10Plastic[8];
+    G4VPhysicalVolume *physBorScin[8];
+
+    phys10Plastic[0] = new G4PVPlacement(0, G4ThreeVector(0., 70.*mm, -75.*mm), logic10Plastic, "phys10Plastic0", logicWorld, false, 0, true);
+    phys10Plastic[1] = new G4PVPlacement(0, G4ThreeVector(0., 70.*mm, 75.7*mm), logic10Plastic, "phys10Plastic1", logicWorld, false, 1, true);
+    physBorScin[0] = new G4PVPlacement(0, G4ThreeVector(0., 82.5*mm, -75.*mm), logicBorScin, "physBorScin0", logicWorld, false, 0, true);
+    physBorScin[1] = new G4PVPlacement(0, G4ThreeVector(0., 82.5*mm, 75.7*mm), logicBorScin, "physBorScin1", logicWorld, false, 1, true);
+
+
+    phys10Plastic[6] = new G4PVPlacement(0, G4ThreeVector(0., -70.*mm, -75.*mm), logic10Plastic, "phys10Plastic6", logicWorld, false, 6, true);
+    phys10Plastic[7] = new G4PVPlacement(0, G4ThreeVector(0., -70.*mm, 75.7*mm), logic10Plastic, "phys10Plastic7", logicWorld, false, 7, true);
+    physBorScin[6] = new G4PVPlacement(0, G4ThreeVector(0., -82.5*mm, -75.*mm), logicBorScin, "physBorScin6", logicWorld, false, 6, true);
+    physBorScin[7] = new G4PVPlacement(0, G4ThreeVector(0., -82.5*mm, 75.7*mm), logicBorScin, "physBorScin7", logicWorld, false, 7, true);
+
+
+    G4RotationMatrix * RotMat = new G4RotationMatrix();
+    RotMat -> rotate(90.0 *deg, G4ThreeVector(0., 0., 1.));
+    RotMat -> invert();
+
+    phys10Plastic[2] = new G4PVPlacement(RotMat, G4ThreeVector(70.*mm, 0., -75*mm), logic10Plastic, "phys10Plastic2", logicWorld, false, 2, true);
+    phys10Plastic[3] = new G4PVPlacement(RotMat, G4ThreeVector(70.*mm, 0., 75.7*mm), logic10Plastic, "phys10Plastic3", logicWorld, false, 3, true);
+    physBorScin[2] = new G4PVPlacement(RotMat, G4ThreeVector(82.5*mm, 0., -75*mm), logicBorScin, "physBorScin2", logicWorld, false, 2, true);
+    physBorScin[3] = new G4PVPlacement(RotMat, G4ThreeVector(82.5*mm, 0., 75.7*mm), logicBorScin, "physBorScin3", logicWorld, false, 3, true);
+
+
+    RotMat -> rotate(180.0 *deg, G4ThreeVector(0., 0., 1.));
+    RotMat -> invert();
+
+    phys10Plastic[4] = new G4PVPlacement(RotMat, G4ThreeVector(-70.*mm, 0., -75*mm), logic10Plastic, "phys10Plastic4", logicWorld, false, 4, true);
+    phys10Plastic[5] = new G4PVPlacement(RotMat, G4ThreeVector(-70.*mm, 0., 75.7*mm), logic10Plastic, "phys10Plastic5", logicWorld, false, 5, true);
+    physBorScin[4] = new G4PVPlacement(RotMat, G4ThreeVector(-82.5*mm, 0., -75*mm), logicBorScin, "physBorScin4", logicWorld, false, 4, true);
+    physBorScin[5] = new G4PVPlacement(RotMat, G4ThreeVector(-82.5*mm, 0., 75.7*mm), logicBorScin, "physBorScin5", logicWorld, false, 5, true);
 
     return physWorld;
-}
-
-void MyDetectorConstruction::ConstructSDandField()
-{
-    MySensitiveDetector *sensDet = new MySensitiveDetector("SensitiveDetector");
-    if(isCherenkov)
-        logicDetector->SetSensitiveDetector(sensDet);
 }
 
 
