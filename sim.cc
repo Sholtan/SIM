@@ -10,7 +10,10 @@
 #include "G4VisAttributes.hh"
 
 #include "construction.hh"
-#include "physics.hh"
+//#include "physics.hh"
+#include <QGSP_INCLXX.hh>
+//#include <FTFP_BERT.hh>
+//#include <QGSP_BERT.hh>
 #include "action.hh"
 
 int main(int argc, char** argv)
@@ -18,7 +21,10 @@ int main(int argc, char** argv)
     G4RunManager *runManager = new G4RunManager();
 
     runManager->SetUserInitialization(new MyDetectorConstruction());
-    runManager->SetUserInitialization(new MyPhysicsList());
+    //runManager->SetUserInitialization(new MyPhysicsList());
+    runManager->SetUserInitialization(new QGSP_INCLXX);
+    //runManager->SetUserInitialization(new FTFP_BERT);
+    //runManager->SetUserInitialization(new QGSP_BERT);
     runManager->SetUserInitialization(new MyActionInitialization());
 
     runManager->Initialize();

@@ -81,8 +81,8 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     
 
 
-    G4VPhysicalVolume *phys10Plastic[8];
-    G4VPhysicalVolume *physBorScin[8];
+    G4VPhysicalVolume *phys10Plastic[9];
+    G4VPhysicalVolume *physBorScin[9];
 
     phys10Plastic[0] = new G4PVPlacement(0, G4ThreeVector(0., 70.*mm, -75.*mm), logic10Plastic, "phys10Plastic0", logicWorld, false, 0, true);
     phys10Plastic[1] = new G4PVPlacement(0, G4ThreeVector(0., 70.*mm, 75.7*mm), logic10Plastic, "phys10Plastic1", logicWorld, false, 1, true);
@@ -105,14 +105,18 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     physBorScin[2] = new G4PVPlacement(RotMat, G4ThreeVector(82.5*mm, 0., -75*mm), logicBorScin, "physBorScin2", logicWorld, false, 2, true);
     physBorScin[3] = new G4PVPlacement(RotMat, G4ThreeVector(82.5*mm, 0., 75.7*mm), logicBorScin, "physBorScin3", logicWorld, false, 3, true);
 
-
-    RotMat -> rotate(180.0 *deg, G4ThreeVector(0., 0., 1.));
-    RotMat -> invert();
-
     phys10Plastic[4] = new G4PVPlacement(RotMat, G4ThreeVector(-70.*mm, 0., -75*mm), logic10Plastic, "phys10Plastic4", logicWorld, false, 4, true);
     phys10Plastic[5] = new G4PVPlacement(RotMat, G4ThreeVector(-70.*mm, 0., 75.7*mm), logic10Plastic, "phys10Plastic5", logicWorld, false, 5, true);
     physBorScin[4] = new G4PVPlacement(RotMat, G4ThreeVector(-82.5*mm, 0., -75*mm), logicBorScin, "physBorScin4", logicWorld, false, 4, true);
     physBorScin[5] = new G4PVPlacement(RotMat, G4ThreeVector(-82.5*mm, 0., 75.7*mm), logicBorScin, "physBorScin5", logicWorld, false, 5, true);
+
+    G4RotationMatrix* RotMatface = new G4RotationMatrix();
+    RotMatface->rotate(90.0 * deg, G4ThreeVector(1., 0., 0.));
+    RotMatface->invert();
+    phys10Plastic[9] = new G4PVPlacement(RotMatface, G4ThreeVector(0., 0., -135* mm), logic10Plastic, "phys10Plastic9", logicWorld, false, 9, true);
+    physBorScin[9] = new G4PVPlacement(RotMatface, G4ThreeVector(0., 0., -147.5 * mm), logicBorScin, "physBorScin9", logicWorld, false, 9, true);
+
+
 
     return physWorld;
 }
