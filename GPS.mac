@@ -1,0 +1,26 @@
+# General particle source
+# ичточник частиц в виде цилиндра охватывающего детектор
+/run/initialize
+/gps/particle proton
+
+# source
+/gps/pos/type Surface
+
+# Surface or Volume sources this can be Sphere, Ellipsoid, Cylinder, Para (parallelpiped).
+
+/gps/pos/shape Cylinder
+/gps/pos/centre 0. 0. -4.65 mm
+/gps/pos/radius 127.3 mm
+/gps/pos/halfz 131. mm
+
+# angular distribution
+/gps/ang/type cos
+
+# energy distribution
+/gps/ene/type Pow
+/gps/ene/min 8. GeV
+/gps/ene/max 20. GeV
+/gps/ene/alpha 0.
+
+/run/printProgress 1
+/run/beamOn 1
