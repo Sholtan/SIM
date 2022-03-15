@@ -11,6 +11,7 @@
 #include "tools/colors"
 #include "G4Colour.hh"
 #include "G4VisAttributes.hh"
+#include "detector.hh"
 
 class MyDetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -19,6 +20,9 @@ public:
     ~MyDetectorConstruction();
 
     virtual G4VPhysicalVolume *Construct();
+private:
+    G4LogicalVolume* logicBorScin;
+    virtual void ConstructSDandField();
 };
 
 #endif

@@ -31,7 +31,8 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
 
     // МИР
 
-    G4Box *solidWorld = new G4Box("solidWorld", 180*mm, 180*mm, 300*mm);
+    //G4Box* solidWorld = new G4Box("solidWorld", 180 * mm, 180 * mm, 300 * mm);
+    G4Box *solidWorld = new G4Box("solidWorld", 180*cm, 180*cm, 300*cm);
 
     G4LogicalVolume *logicWorld = new G4LogicalVolume(solidWorld, worldMat, "logicWorld");
 
@@ -73,7 +74,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     logic10Plastic->SetVisAttributes(calTubeVisAtt3);
 
     G4Box *solidBorScin = new G4Box("solidBorScin", 60.*mm, 2.5*mm, 50.*mm);
-    G4LogicalVolume *logicBorScin = new G4LogicalVolume(solidBorScin, BorScinmat, "logicBorScin");
+    logicBorScin = new G4LogicalVolume(solidBorScin, BorScinmat, "logicBorScin");
 
     G4VisAttributes * calTubeVisAtt4 = new G4VisAttributes(G4Colour(0.,1.,0.)); // Instantiation of a set of visualization attributes with cyan colour
     //calTubeVisAtt3->SetForceWireframe(true); // Set the forced wireframe style
@@ -121,6 +122,10 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     return physWorld;
 }
 
-
+void MyDetectorConstruction::ConstructSDandField()
+{
+    MySensitiveDetector* sensDet = new MySensitiveDetector("SensitiveDetector");
+    logicBorScin->SetSensitiveDetector(sensDet);
+}
 
 
