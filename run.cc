@@ -5,7 +5,9 @@ MyRunAction::MyRunAction()
 	G4AnalysisManager *man = G4AnalysisManager::Instance();
 	
 
-	man->CreateH1("fE", "fE", 100, 0.1, 10, "nanosecond", "fenergy");
+	man->CreateNtuple("all", "all");
+    man->CreateNtupleDColumn("edep");
+    man->CreateNtupleIColumn("pdg");
 }
 
 MyRunAction::~MyRunAction()
@@ -23,7 +25,6 @@ void MyRunAction::BeginOfRunAction(const G4Run* run)
 void MyRunAction::EndOfRunAction(const G4Run*)
 {
 	G4AnalysisManager *man = G4AnalysisManager::Instance();
-	
 	man->Write();
 	man->CloseFile();
 }

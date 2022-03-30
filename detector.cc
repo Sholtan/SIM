@@ -31,10 +31,16 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory*ROhist
 	//G4cout << "copy number " << copyNo << G4endl;
 
 
-	G4cout << particleName << " time: " << globalTime << ", energy: " << particleEnergy << " no kill" << G4endl;
+	//G4cout << particleName << " time: " << globalTime << ", energy: " << particleEnergy << " no kill" << G4endl;
 
 	G4AnalysisManager* man = G4AnalysisManager::Instance();
-	man->FillH1(0, globalTime, particleEnergy);
+
+    if (pdg == 1000020040) {
+	    man->FillNtupleDColumn(0, particleEnergy);
+        man->FillNtupleIColumn(1, pdg);
+        man->AddNtupleRow(0);
+        G4cout << "Alpha is found!!! " << G4endl;
+    }
 
 	return true;
 }

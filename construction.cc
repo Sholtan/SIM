@@ -19,7 +19,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     G4Material *Wmat = new G4Material("Wmat", 19.3*g/cm3, 1);
     Wmat->AddElement(nist->FindOrBuildElement("W"), 1);
 
-    G4Material *BorScinmat = new G4Material("BorScinmat", 1.026, 3);
+    G4Material *BorScinmat = new G4Material("BorScinmat", 1.026 * g / cm3, 3);
     BorScinmat->AddElement(nist->FindOrBuildElement("C"), 9);
     BorScinmat->AddElement(nist->FindOrBuildElement("H"), 10);
     BorScinmat->AddElement(nist->FindOrBuildElement("B"), 1);
