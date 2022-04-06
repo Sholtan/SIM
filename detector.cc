@@ -23,24 +23,71 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory*ROhist
 	G4double globalTime = track->GetGlobalTime();
 
 	const G4DynamicParticle* dParticle = track->GetDynamicParticle();
-	G4double particleEnergy = dParticle->GetTotalEnergy();
+	G4double depositEnergy = aStep->GetTotalEnergyDeposit();
+	G4double kinEnergy = dParticle->GetKineticEnergy();
+
 
 	//G4cout << "The Particle NAME: " << particleName << " with PDG = " << pdg << G4endl;
 	//G4cout << "some particle position: " << positionParticle << G4endl;
-
 	//G4cout << "copy number " << copyNo << G4endl;
-
-
 	//G4cout << particleName << " time: " << globalTime << ", energy: " << particleEnergy << " no kill" << G4endl;
 
 	G4AnalysisManager* man = G4AnalysisManager::Instance();
+	man->FillNtupleDColumn(0, 0, depositEnergy / keV);
+	man->FillNtupleDColumn(0, 1, kinEnergy / keV);
+	man->FillNtupleDColumn(0, 2, positionParticle[0]);
+	man->FillNtupleDColumn(0, 3, positionParticle[1]);
+	man->FillNtupleDColumn(0, 4, positionParticle[2]);
+	man->FillNtupleDColumn(0, 5, globalTime / nanosecond);
+	man->AddNtupleRow(0);
 
     if (pdg == 1000020040) {
-	    man->FillNtupleDColumn(0, particleEnergy);
-        man->FillNtupleIColumn(1, pdg);
-        man->AddNtupleRow(0);
-        G4cout << "Alpha is found!!! " << G4endl;
+		man->FillNtupleDColumn(1, 0, depositEnergy / keV);
+		man->FillNtupleDColumn(1, 1, kinEnergy / keV);
+		man->FillNtupleDColumn(1, 2, positionParticle[0]);
+		man->FillNtupleDColumn(1, 3, positionParticle[1]);
+		man->FillNtupleDColumn(1, 4, positionParticle[2]);
+		man->FillNtupleDColumn(1, 5, globalTime / nanosecond);
+		man->AddNtupleRow(1);
     }
+	if (pdg == 2112) {
+		man->FillNtupleDColumn(2, 0, depositEnergy / keV);
+		man->FillNtupleDColumn(2, 1, kinEnergy / keV);
+		man->FillNtupleDColumn(2, 2, positionParticle[0]);
+		man->FillNtupleDColumn(2, 3, positionParticle[1]);
+		man->FillNtupleDColumn(2, 4, positionParticle[2]);
+		man->FillNtupleDColumn(2, 5, globalTime / nanosecond);
+		man->AddNtupleRow(2);
+	}
+	for (int i = 0; i <= 8; ++i) {
+		if (copyNo == i) {
+			man->FillNtupleDColumn(i+3, 0, depositEnergy / keV);
+			man->FillNtupleDColumn(i + 3, 1, kinEnergy / keV);
+			man->FillNtupleDColumn(i + 3, 2, positionParticle[0]);
+			man->FillNtupleDColumn(i + 3, 3, positionParticle[1]);
+			man->FillNtupleDColumn(i + 3, 4, positionParticle[2]);
+			man->FillNtupleDColumn(i + 3, 5, globalTime / nanosecond);
+			man->AddNtupleRow(i + 3);
+			if (pdg == 1000020040) {
+				man->FillNtupleDColumn(i+12, 0, depositEnergy / keV);
+				man->FillNtupleDColumn(i + 12, 1, kinEnergy / keV);
+				man->FillNtupleDColumn(i + 12, 2, positionParticle[0]);
+				man->FillNtupleDColumn(i + 12, 3, positionParticle[1]);
+				man->FillNtupleDColumn(i + 12, 4, positionParticle[2]);
+				man->FillNtupleDColumn(i + 12, 5, globalTime / nanosecond);
+				man->AddNtupleRow(i + 12);
+			}
+			if (pdg == 2112) {
+				man->FillNtupleDColumn(i+21, 0, depositEnergy / keV);
+				man->FillNtupleDColumn(i + 21, 1, kinEnergy / keV);
+				man->FillNtupleDColumn(i + 21, 2, positionParticle[0]);
+				man->FillNtupleDColumn(i + 21, 3, positionParticle[1]);
+				man->FillNtupleDColumn(i + 21, 4, positionParticle[2]);
+				man->FillNtupleDColumn(i + 21, 5, globalTime / nanosecond);
+				man->AddNtupleRow(i + 21);
+			}
+		}
+	}
 
 	return true;
 }

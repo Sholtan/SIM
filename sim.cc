@@ -1,6 +1,9 @@
 #include <iostream>
 
+#include "G4MTRunManager.hh"
 #include "G4RunManager.hh"
+
+
 #include "G4UImanager.hh"
 #include "G4VisManager.hh"
 #include "G4VisExecutive.hh"
@@ -21,7 +24,8 @@ int main(int argc, char** argv)
     for (int i=0; i<argc; i++) {
         G4cout << argv[i] << G4endl;
     }
-    G4RunManager *runManager = new G4RunManager();
+    G4MTRunManager* runManager = new G4MTRunManager();
+    //G4RunManager *runManager = new G4RunManager();
 
     runManager->SetUserInitialization(new MyDetectorConstruction());
     //runManager->SetUserInitialization(new MyPhysicsList());
@@ -29,10 +33,11 @@ int main(int argc, char** argv)
     //runManager->SetUserInitialization(new FTFP_BERT);
     runManager->SetUserInitialization(new QGSP_BERT_HP);
     runManager->SetUserInitialization(new MyActionInitialization());
-
+    
+    runManager->SetNumberOfThreads(12);
     runManager->Initialize();
     runManager->SetPrintProgress(1);
-    runManager->BeamOn(100);
+    runManager->BeamOn(20000);
     
     /*G4UIExecutive* ui = new G4UIExecutive(argc, argv);
 
@@ -49,9 +54,9 @@ int main(int argc, char** argv)
     UImanager->ApplyCommand("/vis/scene/add/trajectories smooth");
 
 
-    ui->SessionStart();*/
+    ui->SessionStart();
     //UImanager->ApplyCommand(""
-    //UImanager->ApplyCommand("/run/BeamOn 100");
+    //UImanager->ApplyCommand("/run/BeamOn 100");*/
 
     return 0;
 }

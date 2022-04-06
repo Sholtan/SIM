@@ -12,6 +12,8 @@ public:
     MyActionInitialization();
     ~MyActionInitialization();
 
+
+    void BuildForMaster() const;
     virtual void Build() const;
 };
 
