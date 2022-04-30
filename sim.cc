@@ -14,13 +14,23 @@
 
 #include "construction.hh"
 //#include "physics.hh"
-#include <QBBC.hh>
-//#include <FTFP_BERT.hh>
+//#include <QBBC.hh>
+
+
+
+
+
 #include <QGSP_BERT_HP.hh>
+//#include <FTFP_INCLXX_HP.hh> // almost same results
+
+
+
+
 #include "action.hh"
 
 int main(int argc, char** argv)
 {
+    //G4UIExecutive* ui = 0;
     for (int i=0; i<argc; i++) {
         G4cout << argv[i] << G4endl;
     }
@@ -31,15 +41,28 @@ int main(int argc, char** argv)
     //runManager->SetUserInitialization(new MyPhysicsList());
     //runManager->SetUserInitialization(new QGSP_INCLXX);
     //runManager->SetUserInitialization(new FTFP_BERT);
-    runManager->SetUserInitialization(new QGSP_BERT_HP);
+    
+
+
+    runManager->SetUserInitialization(new QGSP_BERT_HP());
+    //runManager->SetUserInitialization(new FTFP_INCLXX_HP());
+
+
     runManager->SetUserInitialization(new MyActionInitialization());
     
     runManager->SetNumberOfThreads(12);
     runManager->Initialize();
-    runManager->SetPrintProgress(1);
-    runManager->BeamOn(20000);
-    
-    /*G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+   
+    //ui = new G4UIExecutive(argc, argv);
+     // for statistics:
+    //G4UImanager* UI = G4UImanager::GetUIpointer();
+    //UI->ApplyCommand("/control/execute run.mac");
+
+
+    //ui->SessionStart();
+
+    //for graphics
+    G4UIExecutive* ui = new G4UIExecutive(argc, argv);
 
     G4VisManager *visManager = new G4VisExecutive();
     visManager->Initialize();
@@ -55,8 +78,6 @@ int main(int argc, char** argv)
 
 
     ui->SessionStart();
-    //UImanager->ApplyCommand(""
-    //UImanager->ApplyCommand("/run/BeamOn 100");*/
 
     return 0;
 }

@@ -5,6 +5,9 @@
 
 #include "G4AnalysisManager.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4VProcess.hh"
+
+
 
 class MySensitiveDetector : public G4VSensitiveDetector
 {

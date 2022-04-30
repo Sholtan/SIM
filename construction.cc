@@ -16,10 +16,14 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     Polyvinyltoluene->AddElement(nist->FindOrBuildElement("C"), 9);
     Polyvinyltoluene->AddElement(nist->FindOrBuildElement("H"), 10);
 
-    G4Material *Wmat = new G4Material("Wmat", 19.3*g/cm3, 3);
-    Wmat->AddElement(nist->FindOrBuildElement("W"), 92.8 * perCent);
-    Wmat->AddElement(nist->FindOrBuildElement("Ni"), 4.5 * perCent);
-    Wmat->AddElement(nist->FindOrBuildElement("Cu"), 2.7 * perCent);
+    G4Material* PWO = new G4Material("PWO", 8.29 * g / cm3, 3);
+    PWO->AddElement(nist->FindOrBuildElement("P"), 1);
+    PWO->AddElement(nist->FindOrBuildElement("O"), 4);
+    PWO->AddElement(nist->FindOrBuildElement("W"), 1);
+    /*G4Material* PWO = new G4Material("Wmat", 19.3 * g / cm3, 3);
+    PWO->AddElement(nist->FindOrBuildElement("W"), 92.8 * perCent);
+    PWO->AddElement(nist->FindOrBuildElement("Ni"), 4.5 * perCent);
+    PWO->AddElement(nist->FindOrBuildElement("Cu"), 2.7 * perCent);*/
 
     G4Material *BorScinmat = new G4Material("BorScinmat", 1.032 * g / cm3, 3);
     BorScinmat->AddElement(nist->FindOrBuildElement("C"), 46 * perCent);
@@ -31,13 +35,20 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     worldMat->AddElement(nist->FindOrBuildElement("N"), 75.5 * perCent);
     worldMat->AddElement(nist->FindOrBuildElement("O"), 23.1 * perCent);
     worldMat->AddElement(nist->FindOrBuildElement("Ar"), 1.4 * perCent);
+
+    G4Material* Al = new G4Material("Al", 2.7 * g / cm3, 1);
+    Al->AddElement(nist->FindOrBuildElement("Al"), 100 * perCent);
+
+    G4Material* Polyetilene = new G4Material("Polyetilene", 0.92 * g / cm3, 2); // ПЛАСТИКОВЫЙ СЦИНТИЛЛЯТОР
+    Polyetilene->AddElement(nist->FindOrBuildElement("C"), 2);
+    Polyetilene->AddElement(nist->FindOrBuildElement("H"), 4);
    
 
 
     // МИР
 
-    //G4Box* solidWorld = new G4Box("solidWorld", 180 * mm, 180 * mm, 300 * mm);
-    G4Box *solidWorld = new G4Box("solidWorld", 180*cm, 180*cm, 300*cm);
+    G4Box* solidWorld = new G4Box("solidWorld", 85 * mm, 85 * mm, 300 * mm);
+    //G4Box *solidWorld = new G4Box("solidWorld", 180*cm, 180*cm, 300*cm);
 
     G4LogicalVolume *logicWorld = new G4LogicalVolume(solidWorld, worldMat, "logicWorld");
 
@@ -57,7 +68,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     // ВОЛЬФРАМОВЫЙ ПРЕОБРАЗОВАТЕЛЬ
     
     G4Box *solidWolfram = new G4Box("solidWolfram", 60*mm, 60*mm, 0.4*mm);
-    G4LogicalVolume *logicWolfram = new G4LogicalVolume(solidWolfram, Wmat, "logicWolfram");
+    G4LogicalVolume *logicWolfram = new G4LogicalVolume(solidWolfram, PWO, "logicWolfram");
     G4VisAttributes * calTubeVisAtt2 = new G4VisAttributes(G4Colour(0.5,0.5,0.5)); // Instantiation of a set of visualization attributes with cyan colour
     //calTubeVisAtt2->SetForceWireframe(true); // Set the forced wireframe style
     logicWolfram->SetVisAttributes(calTubeVisAtt2);
@@ -69,6 +80,13 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
         physPlasticScin[i] = new G4PVPlacement(0, G4ThreeVector(0., 0., (-125.+0.75+2.3*i)*mm), logicPlasticScin, "physPlasticScin" + std::to_string(i), logicWorld, false, i, true);
         physWolfram[i] = new G4PVPlacement(0, G4ThreeVector(0., 0., (-123.5+0.4+2.3*i)*mm), logicWolfram, "physWolfram" + std::to_string(i), logicWorld, false, i, true);
     }
+
+
+
+    //G4Box* solidend = new G4Box("solidend", 60 * mm, 60 * mm, 0.4 * mm);
+    //G4LogicalVolume* logicend = new G4LogicalVolume(solidend, PWO, "logicend");
+    //G4VPhysicalVolume* physend = new G4PVPlacement(0, G4ThreeVector(0., 0., (-123.5 + 0.4 + 2.3 * 109) * mm), logicend, "physend", logicWorld, false, 0, true);
+
 
 // 10 ММ ПЛАСТИК
     G4Box *solid10Plastic = new G4Box("solid10Plastic", 60*mm, 5*mm, 50*mm);
@@ -127,7 +145,16 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     physBorScin[0] = new G4PVPlacement(RotMatface, G4ThreeVector(0., 0., -137.5 * mm), logicBorScin, "physBorScin9", logicWorld, false, 0, true);
 
 
-
+    // TARGET
+    G4Box* solidtargetAl = new G4Box("solidtargetAl", 60 * mm, 60 * mm, 7.5 * mm);
+    logictargetAl = new G4LogicalVolume(solidtargetAl, Al, "logictargetAl");
+    G4Box* solidtargetPol = new G4Box("solidtargetPol", 60 * mm, 60 * mm, 35 * mm);
+    logictargetPol = new G4LogicalVolume(solidtargetPol, Polyetilene, "logictargetPol");
+    G4VPhysicalVolume* phystargetAl = new G4PVPlacement(0, G4ThreeVector(0., 0., -217.5*mm), logictargetAl, "phystargetAl", logicWorld, false, 0, true);
+    G4VPhysicalVolume* phystargetPol = new G4PVPlacement(0, G4ThreeVector(0., 0., -175 * mm), logictargetPol, "phystargetPol", logicWorld, false, 0, true);
+    
+    
+    
     return physWorld;
 }
 
@@ -135,6 +162,10 @@ void MyDetectorConstruction::ConstructSDandField()
 {
     MySensitiveDetector* sensDet = new MySensitiveDetector("SensitiveDetector");
     logicBorScin->SetSensitiveDetector(sensDet);
+
+
+
+
 }
 
 

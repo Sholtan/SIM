@@ -22,6 +22,8 @@ public:
     virtual G4VPhysicalVolume *Construct();
 private:
     G4LogicalVolume* logicBorScin;
+    G4LogicalVolume* logictargetPol;
+    G4LogicalVolume* logictargetAl;
     virtual void ConstructSDandField();
 };
 
