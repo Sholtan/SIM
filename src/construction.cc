@@ -6,45 +6,61 @@ MyDetectorConstruction::MyDetectorConstruction()
 MyDetectorConstruction::~MyDetectorConstruction()
 {}
 
-G4VPhysicalVolume *MyDetectorConstruction::Construct()
+
+void MyDetectorConstruction::SetMaterials()
 {
-    G4NistManager *nist = G4NistManager::Instance();
-
-    //  МАТЕРИАЛЫ        
-
-    G4Material *Polyvinyltoluene = new G4Material("Polyvinyltoluene", 1.023*g/cm3, 2); // ПЛАСТИКОВЫЙ СЦИНТИЛЛЯТОР
+    Polyvinyltoluene = new G4Material("Polyvinyltoluene", 1.023*g/cm3, 2); // ПЛАСТИКОВЫЙ СЦИНТИЛЛЯТОР
     Polyvinyltoluene->AddElement(nist->FindOrBuildElement("C"), 9);
     Polyvinyltoluene->AddElement(nist->FindOrBuildElement("H"), 10);
 
-    G4Material* PWO = new G4Material("PWO", 8.29 * g / cm3, 3);
+    PWO = new G4Material("PWO", 8.29 * g / cm3, 3);
     PWO->AddElement(nist->FindOrBuildElement("P"), 1);
     PWO->AddElement(nist->FindOrBuildElement("O"), 4);
     PWO->AddElement(nist->FindOrBuildElement("W"), 1);
+
+
+
+// конвертер - Свинец 11,34 гр/см3
+
+// Пластик FscScint   1.032 гр/см3,  C9H10, заметлитель
+
+
+
+
     /*G4Material* PWO = new G4Material("Wmat", 19.3 * g / cm3, 3);
     PWO->AddElement(nist->FindOrBuildElement("W"), 92.8 * perCent);
     PWO->AddElement(nist->FindOrBuildElement("Ni"), 4.5 * perCent);
     PWO->AddElement(nist->FindOrBuildElement("Cu"), 2.7 * perCent);*/
 
-    G4Material *BorScinmat = new G4Material("BorScinmat", 1.032 * g / cm3, 3);
-    BorScinmat->AddElement(nist->FindOrBuildElement("C"), 46 * perCent);
-    BorScinmat->AddElement(nist->FindOrBuildElement("H"), 51 * perCent);
-    BorScinmat->AddElement(nist->FindOrBuildElement("B"), 3 * perCent);
+    BorScinmat = new G4Material("BorScinmat", 0.98 * g / cm3, 3);
+    BorScinmat->AddElement(nist->FindOrBuildElement("C"), (88.26) * perCent);
+    BorScinmat->AddElement(nist->FindOrBuildElement("H"), (7.74) * perCent);
+    BorScinmat->AddElement(nist->FindOrBuildElement("B"), (4.0) * perCent);
 
     //G4Material *worldMat = nist->FindOrBuildMaterial("G4_AIR");
-    G4Material *worldMat = new G4Material("worldMat", 1.205e-14 * g / cm3, 3);
+    worldMat = new G4Material("worldMat", 1.205e-14 * g / cm3, 3);
     worldMat->AddElement(nist->FindOrBuildElement("N"), 75.5 * perCent);
     worldMat->AddElement(nist->FindOrBuildElement("O"), 23.1 * perCent);
     worldMat->AddElement(nist->FindOrBuildElement("Ar"), 1.4 * perCent);
 
-    G4Material* Al = new G4Material("Al", 2.7 * g / cm3, 1);
+
+
+// мишень - Алюминий 40 мм  
+// 
+
+
+    Al = new G4Material("Al", 2.7 * g / cm3, 1);
     Al->AddElement(nist->FindOrBuildElement("Al"), 100 * perCent);
 
-    G4Material* Polyetilene = new G4Material("Polyetilene", 0.92 * g / cm3, 2); // ПЛАСТИКОВЫЙ СЦИНТИЛЛЯТОР
+    Polyetilene = new G4Material("Polyetilene", 0.92 * g / cm3, 2); // ПЛАСТИКОВЫЙ СЦИНТИЛЛЯТОР
     Polyetilene->AddElement(nist->FindOrBuildElement("C"), 2);
     Polyetilene->AddElement(nist->FindOrBuildElement("H"), 4);
-   
+}
 
 
+G4VPhysicalVolume *MyDetectorConstruction::Construct()
+{
+    SetMaterials();
     // МИР
 
     G4Box* solidWorld = new G4Box("solidWorld", 85 * mm, 85 * mm, 300 * mm);

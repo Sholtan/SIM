@@ -25,6 +25,16 @@ private:
     G4LogicalVolume* logictargetPol;
     G4LogicalVolume* logictargetAl;
     virtual void ConstructSDandField();
+    void SetMaterials();
+
+    G4NistManager *nist = G4NistManager::Instance();
+    G4Material *Polyvinyltoluene;
+    G4Material* PWO;
+    G4Material *BorScinmat;
+    G4Material *worldMat;
+    G4Material* Al;
+    G4Material* Polyetilene;
+
 };
 
 #endif

@@ -12,6 +12,46 @@ MySteppingAction::~MySteppingAction()
 void MySteppingAction::UserSteppingAction(const G4Step* aStep)
 {
 	G4Track* track = aStep->GetTrack();
+
+	const G4ParticleDefinition* particleDefinition = track->GetParticleDefinition();
+	G4double pdgcharge = particleDefinition->GetPDGCharge();
+	G4int pdg = particleDefinition->GetPDGEncoding();
+	const G4String& particlename = particleDefinition->GetParticleName();
+
+	G4double depositEnergy = aStep->GetTotalEnergyDeposit();
+
+	const G4DynamicParticle* dParticle = track->GetDynamicParticle();
+	G4double kinEnergy = dParticle->GetKineticEnergy();
+
+	G4int CurrentStepNumber = track->GetCurrentStepNumber();
+
+	G4double globalTime = track->GetGlobalTime();
+
+	G4VPhysicalVolume* vol = track->GetVolume();
+	const G4String volname = vol->GetLogicalVolume()->GetName();
+
+	if (depositEnergy > 0. && globalTime > 1000. && volname == "logicBorScin")
+	{
+		fEventAction->fSteps_info[0].push_back(depositEnergy / MeV);
+		fEventAction->fSteps_info[1].push_back(globalTime);
+		fEventAction->fSteps_info[2].push_back(pdg);
+	}
+
+	if (CurrentStepNumber == 1 && pdg == 1000020040 && volname == "logicBorScin")
+	{
+		//G4cout << particlename << ", dE: " << depositEnergy << ", Ek: " << kinEnergy << ", t: " << globalTime/1000. << G4endl;
+		fEventAction->falpha_info[0].push_back(depositEnergy / MeV);
+		fEventAction->falpha_info[1].push_back(globalTime);
+	}
+
+
+}
+
+
+
+
+/*
+	G4Track* track = aStep->GetTrack();
 	G4VPhysicalVolume* vol = track->GetVolume();
 	const G4String volname = vol->GetLogicalVolume()->GetName();
 
@@ -48,7 +88,7 @@ void MySteppingAction::UserSteppingAction(const G4Step* aStep)
 		}
 	}
 
-
+*/
 
 
 
@@ -67,7 +107,7 @@ void MySteppingAction::UserSteppingAction(const G4Step* aStep)
 	// && volname == "logicBorScin"
 
 
-
+/*
 	if (volname == "logicBorScin") {
 		if (pdg == 2112) {
 			if (aStep->IsFirstStepInVolume()) {
@@ -106,5 +146,4 @@ void MySteppingAction::UserSteppingAction(const G4Step* aStep)
 		}
 	}
 
-}
-
+*/

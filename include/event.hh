@@ -16,14 +16,11 @@ public:
 	virtual void BeginOfEventAction(const G4Event*);
 	virtual void EndOfEventAction(const G4Event*);
 
-	void Addinelas() { wasinelas += 1; }
-	std::map<int, std::vector<double>> nF;
-	std::map<int, std::vector<double>> nL;
-	std::map<int, std::vector<double>> aF;
-	std::map<int, std::vector<double>> aL;
-	
+
+	std::map<int, std::vector<double>> fSteps_info;
+	std::map<int, std::vector<double>> falpha_info;
 private:
-	G4int wasinelas;
+
 
 };
 #endif

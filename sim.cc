@@ -20,8 +20,8 @@
 
 
 
-#include <QGSP_BERT_HP.hh>
-//#include <FTFP_INCLXX_HP.hh> // almost same results
+//#include <QGSP_BERT_HP.hh>
+#include <FTFP_INCLXX_HP.hh> // almost same results
 
 
 
@@ -44,8 +44,8 @@ int main(int argc, char** argv)
     
 
 
-    runManager->SetUserInitialization(new QGSP_BERT_HP());
-    //runManager->SetUserInitialization(new FTFP_INCLXX_HP());
+    //runManager->SetUserInitialization(new QGSP_BERT_HP());
+    runManager->SetUserInitialization(new FTFP_INCLXX_HP());
 
 
     runManager->SetUserInitialization(new MyActionInitialization());
@@ -54,30 +54,27 @@ int main(int argc, char** argv)
     runManager->Initialize();
    
     //ui = new G4UIExecutive(argc, argv);
-     // for statistics:
-    //G4UImanager* UI = G4UImanager::GetUIpointer();
-    //UI->ApplyCommand("/control/execute run.mac");
+    // for statistics:
+    G4UImanager* UI = G4UImanager::GetUIpointer();
+    UI->ApplyCommand("/control/execute run.mac");
 
 
     //ui->SessionStart();
 
     //for graphics
+    /*
     G4UIExecutive* ui = new G4UIExecutive(argc, argv);
-
-    G4VisManager *visManager = new G4VisExecutive();
+    G4VisManager* visManager = new G4VisExecutive();
     visManager->Initialize();
-
-
-
-    G4UImanager *UImanager = G4UImanager::GetUIpointer();
-    UImanager->ApplyCommand("/vis/open OGL");
-    UImanager->ApplyCommand("/vis/viewer/set/viewpointVector 1 1 1");
-    UImanager->ApplyCommand("/vis/drawVolume");
-    UImanager->ApplyCommand("/vis/viewer/set/autoRefresh true");
-    UImanager->ApplyCommand("/vis/scene/add/trajectories smooth");
-
-
+    G4UImanager* UImanager = G4UImanager::GetUIpointer();
+    UImanager->ApplyCommand("/control/execute vis.mac");
     ui->SessionStart();
+    delete ui;
+    delete visManager;
+    */
+
+
+    delete runManager;
 
     return 0;
 }
