@@ -9,15 +9,19 @@ MyDetectorConstruction::~MyDetectorConstruction()
 
 void MyDetectorConstruction::SetMaterials()
 {
-    Polyvinyltoluene = new G4Material("Polyvinyltoluene", 1.023*g/cm3, 2); // ПЛАСТИКОВЫЙ СЦИНТИЛЛЯТОР
+    Polyvinyltoluene = new G4Material("Polyvinyltoluene", 1.032*g/cm3, 2); // ПЛАСТИКОВЫЙ СЦИНТИЛЛЯТОР
     Polyvinyltoluene->AddElement(nist->FindOrBuildElement("C"), 9);
     Polyvinyltoluene->AddElement(nist->FindOrBuildElement("H"), 10);
 
+/*
     PWO = new G4Material("PWO", 8.29 * g / cm3, 3);
     PWO->AddElement(nist->FindOrBuildElement("P"), 1);
     PWO->AddElement(nist->FindOrBuildElement("O"), 4);
     PWO->AddElement(nist->FindOrBuildElement("W"), 1);
+*/
 
+    Pb = new G4Material("Pb", 11.34 * g / cm3, 1);
+    Pb->AddElement(nist->FindOrBuildElement("Pb"), 100 * perCent);
 
 
 // конвертер - Свинец 11,34 гр/см3
@@ -32,10 +36,10 @@ void MyDetectorConstruction::SetMaterials()
     PWO->AddElement(nist->FindOrBuildElement("Ni"), 4.5 * perCent);
     PWO->AddElement(nist->FindOrBuildElement("Cu"), 2.7 * perCent);*/
 
-    BorScinmat = new G4Material("BorScinmat", 0.98 * g / cm3, 3);
-    BorScinmat->AddElement(nist->FindOrBuildElement("C"), (88.26) * perCent);
-    BorScinmat->AddElement(nist->FindOrBuildElement("H"), (7.74) * perCent);
-    BorScinmat->AddElement(nist->FindOrBuildElement("B"), (4.0) * perCent);
+    BorScinmat = new G4Material("BorScinmat", 1.026 * g / cm3, 3);
+    BorScinmat->AddElement(nist->FindOrBuildElement("C"), (86.5301) * perCent);
+    BorScinmat->AddElement(nist->FindOrBuildElement("H"), (8.4699) * perCent);
+    BorScinmat->AddElement(nist->FindOrBuildElement("B"), (5.0) * perCent);
 
     //G4Material *worldMat = nist->FindOrBuildMaterial("G4_AIR");
     worldMat = new G4Material("worldMat", 1.205e-14 * g / cm3, 3);
@@ -84,7 +88,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     // ВОЛЬФРАМОВЫЙ ПРЕОБРАЗОВАТЕЛЬ
     
     G4Box *solidWolfram = new G4Box("solidWolfram", 60*mm, 60*mm, 0.4*mm);
-    G4LogicalVolume *logicWolfram = new G4LogicalVolume(solidWolfram, PWO, "logicWolfram");
+    G4LogicalVolume *logicWolfram = new G4LogicalVolume(solidWolfram, Pb, "logicWolfram");
     G4VisAttributes * calTubeVisAtt2 = new G4VisAttributes(G4Colour(0.5,0.5,0.5)); // Instantiation of a set of visualization attributes with cyan colour
     //calTubeVisAtt2->SetForceWireframe(true); // Set the forced wireframe style
     logicWolfram->SetVisAttributes(calTubeVisAtt2);
@@ -162,12 +166,13 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
 
 
     // TARGET
-    G4Box* solidtargetAl = new G4Box("solidtargetAl", 60 * mm, 60 * mm, 7.5 * mm);
+    G4Box* solidtargetAl = new G4Box("solidtargetAl", 60 * mm, 60 * mm, 25. * mm);
     logictargetAl = new G4LogicalVolume(solidtargetAl, Al, "logictargetAl");
-    G4Box* solidtargetPol = new G4Box("solidtargetPol", 60 * mm, 60 * mm, 35 * mm);
-    logictargetPol = new G4LogicalVolume(solidtargetPol, Polyetilene, "logictargetPol");
-    G4VPhysicalVolume* phystargetAl = new G4PVPlacement(0, G4ThreeVector(0., 0., -217.5*mm), logictargetAl, "phystargetAl", logicWorld, false, 0, true);
-    G4VPhysicalVolume* phystargetPol = new G4PVPlacement(0, G4ThreeVector(0., 0., -175 * mm), logictargetPol, "phystargetPol", logicWorld, false, 0, true);
+    //G4Box* solidtargetPol = new G4Box("solidtargetPol", 60 * mm, 60 * mm, 35 * mm);
+    //logictargetPol = new G4LogicalVolume(solidtargetPol, Polyetilene, "logictargetPol");
+    //G4VPhysicalVolume* phystargetAl = new G4PVPlacement(0, G4ThreeVector(0., 0., -217.5*mm), logictargetAl, "phystargetAl", logicWorld, false, 0, true);
+    G4VPhysicalVolume* phystargetAl = new G4PVPlacement(0, G4ThreeVector(0., 0., -175 * mm), logictargetAl, "phystargetAl", logicWorld, false, 0, true);
+    //G4VPhysicalVolume* phystargetPol = new G4PVPlacement(0, G4ThreeVector(0., 0., -175 * mm), logictargetPol, "phystargetPol", logicWorld, false, 0, true);
     
     
     

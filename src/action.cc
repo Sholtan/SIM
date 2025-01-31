@@ -6,6 +6,15 @@ MyActionInitialization::MyActionInitialization()
 MyActionInitialization::~MyActionInitialization()
 {}
 
+
+void MyActionInitialization::SetPrimaryParticleEnergy(G4double PrimaryParticleEnergy)
+{
+    fPrimaryParticleEnergy = PrimaryParticleEnergy;
+    //G4cout << G4endl << "fPrimaryParticleEnergy in TGFActionInitialization was set to " << fPrimaryParticleEnergy << G4endl << G4endl;
+}
+
+
+
 void MyActionInitialization::BuildForMaster() const
 {
     MyRunAction* runAction = new MyRunAction();
@@ -16,6 +25,7 @@ void MyActionInitialization::BuildForMaster() const
 void MyActionInitialization::Build() const
 {
     MyPrimaryGenerator* generator = new MyPrimaryGenerator();
+    generator->SetPrimaryEnergy(fPrimaryParticleEnergy);
     SetUserAction(generator);
 
     MyRunAction* runAction = new MyRunAction();

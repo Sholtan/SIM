@@ -1,2 +1,0 @@
-# SIM
-OLVE HERO detector 

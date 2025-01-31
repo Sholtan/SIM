@@ -37,7 +37,7 @@ void MySteppingAction::UserSteppingAction(const G4Step* aStep)
 		fEventAction->fSteps_info[2].push_back(pdg);
 	}
 
-	if (CurrentStepNumber == 1 && pdg == 1000020040 && volname == "logicBorScin")
+	if (pdg == 1000020040 && volname == "logicBorScin")   // CurrentStepNumber == 1 && 
 	{
 		//G4cout << particlename << ", dE: " << depositEnergy << ", Ek: " << kinEnergy << ", t: " << globalTime/1000. << G4endl;
 		fEventAction->falpha_info[0].push_back(depositEnergy / MeV);

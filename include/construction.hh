@@ -33,6 +33,7 @@ private:
     G4Material *BorScinmat;
     G4Material *worldMat;
     G4Material* Al;
+    G4Material* Pb;
     G4Material* Polyetilene;
 
 };
