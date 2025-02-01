@@ -14,7 +14,7 @@ public:
     MyActionInitialization();
     ~MyActionInitialization();
 
-    void SetPrimaryParticleEnergy(G4double);
+    void SetPrimaryParticleEnergy(G4double, G4int, G4int);
 
     
     virtual void Build() const;
@@ -22,6 +22,8 @@ public:
 
 private:
     G4double fPrimaryParticleEnergy;
+    G4int fbeam_A;
+    G4int fbeam_charge;
 };
 
 #endif

@@ -31,13 +31,18 @@
 int main(int argc, char** argv)
 {
     
-    if (argc != 2)
+    if (argc != 5)
     {
         G4cout << G4endl << G4endl  << G4endl << "ERROR, MISSING ARGUMENTS! PROVIDE PRIMARY PARTICLE ENERGY AS FIRST VALUE" << G4endl << G4endl << G4endl << G4endl;
         return 1;
     }
 
     G4double PrimaryParticleEnergy = atof(argv[1]);
+    G4int beam_A = atof(argv[2]);;
+    G4int beam_charge = atof(argv[3]);;
+    G4int phys_list = atof(argv[4]);;
+
+
 
     G4MTRunManager* runManager = new G4MTRunManager();
     //G4RunManager *runManager = new G4RunManager();
@@ -49,13 +54,26 @@ int main(int argc, char** argv)
     
 
 
-    runManager->SetUserInitialization(new QGSP_BERT_HP());
-    //runManager->SetUserInitialization(new FTFP_INCLXX_HP());
+    if (phys_list == 0) 
+    {
+        runManager->SetUserInitialization(new QGSP_BERT_HP());
+        G4cout << "phys_list list is QGSP_BERT_HP" << G4endl;
+    }
+    else if (phys_list == 1)
+    {
+        runManager->SetUserInitialization(new FTFP_INCLXX_HP());
+        G4cout << "phys_list list is FTFP_INCLXX_HP" << G4endl;
+    }
+    else
+    {
+        G4cout << "provide phys_list as 4th argument \n0 for QGSP_BERT_HP \n1 for FTFP_INCLXX_HP" << G4endl;
+    }
+    
 
 
     //runManager->SetUserInitialization(new MyActionInitialization());
     MyActionInitialization *actionInitialization = new MyActionInitialization();
-    actionInitialization->SetPrimaryParticleEnergy(PrimaryParticleEnergy);
+    actionInitialization->SetPrimaryParticleEnergy(PrimaryParticleEnergy, beam_A, beam_charge);
     runManager->SetUserInitialization(actionInitialization);
 
 
@@ -81,7 +99,7 @@ int main(int argc, char** argv)
     ui->SessionStart();
     delete ui;
     delete visManager;
-*/    
+  */
 
 
     delete runManager;

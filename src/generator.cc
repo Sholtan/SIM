@@ -10,11 +10,13 @@ MyPrimaryGenerator::~MyPrimaryGenerator()
     delete fParticleGun;
 }
 
-void MyPrimaryGenerator::SetPrimaryEnergy(G4double PrimaryEnergy)
+void MyPrimaryGenerator::SetPrimaryEnergy(G4double PrimaryEnergy, G4int beam_A, G4int beam_charge)
 {
     fPrimaryEnergy = PrimaryEnergy;
     //G4cout << G4endl << "fPrimaryEnergy in TGFPrimaryGenerator was set to " << fPrimaryEnergy << G4endl << G4endl;
     
+    fbeam_A = beam_A;
+    fbeam_charge = beam_charge;    
 }
 
 
@@ -39,10 +41,10 @@ void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent)
     //int beam_A = 13;
     //int beam_charge = 6;
 
-    int beam_A = 9;
-    int beam_charge = 4;
+    //int beam_A = 9;
+    //int beam_charge = 4;
 
-    G4ParticleDefinition* particle = Iontable->GetIon(beam_charge, beam_A, 0); // Be-9 
+    G4ParticleDefinition* particle = Iontable->GetIon(fbeam_charge, fbeam_A, 0); // Be-9 
 
 
     G4ThreeVector pos(0.,0.,-280.*mm);
@@ -51,7 +53,7 @@ void MyPrimaryGenerator::GeneratePrimaries(G4Event *anEvent)
     fParticleGun->SetParticleDefinition(particle);
     fParticleGun->SetParticlePosition(pos);
     fParticleGun->SetParticleMomentumDirection(mom);
-    fParticleGun->SetParticleEnergy(beam_A * fPrimaryEnergy*GeV);   // 56*10.
+    fParticleGun->SetParticleEnergy(fbeam_A * fPrimaryEnergy*GeV);   // 56*10.
 
     fParticleGun->GeneratePrimaryVertex(anEvent);
 

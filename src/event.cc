@@ -13,17 +13,20 @@ MyEventAction::~MyEventAction()
 
 void MyEventAction::BeginOfEventAction(const G4Event*)
 {
+    fSteps_info = { {0, {}}, {1, {}}, {2, {}}, {3, {}},};
+    falpha_info = { {0, {}}, {1, {}}, {2, {}},};
 }
 
 void MyEventAction::EndOfEventAction(const G4Event* ev)
 {
 	G4int n_event = ev->GetEventID();
 	G4AnalysisManager* man = G4AnalysisManager::Instance();
-	G4cout << "END OF EVENT: " << n_event << G4endl;
+	G4cout << "end of n_event: " << n_event <<  G4endl;
 
 	int Steps_info_size = fSteps_info[0].size();
     for (G4int i = 0; i < Steps_info_size; i++)
     {
+        //G4cout << "n_event: " << n_event << G4endl;
         man->FillNtupleIColumn(0, 0, n_event);     
         man->FillNtupleDColumn(0, 1, fSteps_info[0][i]);     
 	    man->FillNtupleDColumn(0, 2, fSteps_info[1][i]);

@@ -20,13 +20,14 @@ public:
     virtual void GeneratePrimaries(G4Event*);
 
 
-    void SetPrimaryEnergy(G4double);
+    void SetPrimaryEnergy(G4double, G4int, G4int);
 
 
 private:
     G4ParticleGun *fParticleGun;
     G4double fPrimaryEnergy;
-    
+    G4int fbeam_A;
+    G4int fbeam_charge;    
 };
 
 #endif
